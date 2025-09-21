@@ -1,0 +1,1 @@
+This repository contains an implementation of the Tile Based Wave Function Collapse (WFC).
