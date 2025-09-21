@@ -1,0 +1,21 @@
+.vscode/
+
+# Logs and temps
+*.log
+*.tmp
+*.swp
+*~
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# STB image headers (if generated or temp)
+stb_*.tmp
+
+# Build and output directories
+build/
+bin/
+*.exe
