@@ -1,6 +1,3 @@
-#define STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-
 #include <stb/stb_image.h>
 #include <stb/stb_image_write.h>
 #include <raylib/raylib.h>
@@ -8,6 +5,16 @@
 
 int main()
 {
-    std::cout << "Hello, World!";
+    InitWindow(600, 600, "TILE WFC");
+    
+    while(!WindowShouldClose())
+    {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+        EndDrawing();
+    }
+    
+    CloseWindow();
+
     return 0;
 }
