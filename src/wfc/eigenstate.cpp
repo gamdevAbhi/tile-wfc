@@ -15,8 +15,6 @@ wfc::eigenstate::eigenstate(int* id, unsigned char* data, int width, int height,
 
     int boundaries_size[2] = {width / 4, height / 4};
 
-    // std::cout << "boundaries_size : " << boundaries_size[0] << " , " << boundaries_size[1] << std::endl;
-
     this->b_size = 12;
     
     this->boundaries = new Region[b_size];
@@ -30,9 +28,6 @@ wfc::eigenstate::eigenstate(int* id, unsigned char* data, int width, int height,
         this->boundaries[i].start_col = i * boundaries_size[1];
         this->boundaries[i].end_row = this->boundaries[i].start_row + boundaries_size[0];
         this->boundaries[i].end_col = this->boundaries[i].start_col + boundaries_size[1];
-
-        // std::cout << i << " " << "boundaries x : " << this->boundaries[i].start_row << " , " << this->boundaries[i].end_row  << std::endl;
-        // std::cout << i << " " << "boundaries y : " << this->boundaries[i].start_col << " , " << this->boundaries[i].end_col  << std::endl;
     }
 
     for(int i = 4; i < 6; i++)
@@ -43,9 +38,6 @@ wfc::eigenstate::eigenstate(int* id, unsigned char* data, int width, int height,
         this->boundaries[i].start_col = 0;
         this->boundaries[i].end_row = this->boundaries[i].start_row + boundaries_size[0];
         this->boundaries[i].end_col = this->boundaries[i].start_col + boundaries_size[1];
-
-        // std::cout << i << " " << "boundaries x : " << this->boundaries[i].start_row << " , " << this->boundaries[i].end_row  << std::endl;
-        // std::cout << i << " " << "boundaries y : " << this->boundaries[i].start_col << " , " << this->boundaries[i].end_col  << std::endl;
     }
 
     for(int i = 6; i < 8; i++)
@@ -56,9 +48,6 @@ wfc::eigenstate::eigenstate(int* id, unsigned char* data, int width, int height,
         this->boundaries[i].start_col = 3 * boundaries_size[1];
         this->boundaries[i].end_row = this->boundaries[i].start_row + boundaries_size[0];
         this->boundaries[i].end_col = this->boundaries[i].start_col + boundaries_size[1];
-
-        // std::cout << i << " " << "boundaries x : " << this->boundaries[i].start_row << " , " << this->boundaries[i].end_row  << std::endl;
-        // std::cout << i << " " << "boundaries y : " << this->boundaries[i].start_col << " , " << this->boundaries[i].end_col  << std::endl;
     }
 
     for(int i = 8; i < 12; i++)
@@ -69,9 +58,6 @@ wfc::eigenstate::eigenstate(int* id, unsigned char* data, int width, int height,
         this->boundaries[i].start_col = (i - 8) * boundaries_size[1];
         this->boundaries[i].end_row = this->boundaries[i].start_row + boundaries_size[0];
         this->boundaries[i].end_col = this->boundaries[i].start_col + boundaries_size[1];
-
-        // std::cout << i << " " << "boundaries x : " << this->boundaries[i].start_row << " , " << this->boundaries[i].end_row  << std::endl;
-        // std::cout << i << " " << "boundaries y : " << this->boundaries[i].start_col << " , " << this->boundaries[i].end_col  << std::endl;
     }
 
     int boundaries_pixel_size = boundaries_size[0] * boundaries_size[1];
@@ -101,7 +87,10 @@ wfc::eigenstate::eigenstate(int* id, unsigned char* data, int width, int height,
         colors[i].r = avgR;
         colors[i].g = avgG;
         colors[i].b = avgB;
-
-        // std::cout << i << " " << "colors : " << colors[i].r << " , " << colors[i].g << " , " << colors[i].b  << std::endl;
     }
+}
+
+wfc::Color* wfc::eigenstate::get_color()
+{
+    return colors;
 }

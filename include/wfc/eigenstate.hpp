@@ -28,6 +28,7 @@ namespace wfc
         int id, width, height, channels, b_size; 
         public:
         eigenstate(int* id, unsigned char* data, int width, int height, int channels);
+        Color* get_color();
     };
 }
 
