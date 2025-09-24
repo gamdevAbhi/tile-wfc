@@ -24,11 +24,19 @@ namespace wfc
         unsigned char* data;
         Region* boundaries;
         Color* colors;
+        Color up_color;
+        Color left_color;
+        Color right_color;
+        Color down_color;
         Region region;
         int id, width, height, channels, b_size; 
         public:
         eigenstate(int* id, unsigned char* data, int width, int height, int channels);
-        Color* get_color();
+        Color get_color(int index);
+        Color get_up_color();
+        Color get_left_color();
+        Color get_right_color();
+        Color get_down_color();
     };
 }
 

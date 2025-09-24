@@ -88,9 +88,46 @@ wfc::eigenstate::eigenstate(int* id, unsigned char* data, int width, int height,
         colors[i].g = avgG;
         colors[i].b = avgB;
     }
+
+    // up color
+    up_color.r = (colors[0].r + colors[4].r + colors[5].r + colors[8].r) / 3;
+    up_color.g = (colors[0].g + colors[4].g + colors[5].g + colors[8].g) / 3;
+    up_color.b = colors[0].b + colors[4].b + colors[5].b + colors[8].b / 3;
+    // left color
+    left_color.r = (colors[0].r + colors[1].r + colors[2].r + colors[3].r) / 3;
+    left_color.g = (colors[0].g + colors[1].g + colors[2].g + colors[3].g) /3;
+    left_color.b = (colors[0].b + colors[1].b + colors[2].b + colors[3].b) / 3;
+    // right color
+    right_color.r = (colors[8].r + colors[9].r + colors[10].r + colors[11].r) / 3;
+    right_color.g = (colors[8].g + colors[9].g + colors[10].g + colors[11].g) / 3;
+    right_color.b = (colors[8].b + colors[9].b + colors[10].b + colors[11].b) / 3;
+    // down color
+    down_color.r = (colors[3].r + colors[6].r + colors[7].r + colors[11].r) / 3;
+    down_color.g = (colors[3].g + colors[6].g + colors[7].g + colors[11].g) / 3;
+    down_color.b = (colors[3].b + colors[6].b + colors[7].b + colors[11].b) / 3;
 }
 
-wfc::Color* wfc::eigenstate::get_color()
+wfc::Color wfc::eigenstate::get_color(int index)
 {
-    return colors;
+    return colors[index];
+}
+
+wfc::Color wfc::eigenstate::get_up_color()
+{
+    return up_color;
+}
+
+wfc::Color wfc::eigenstate::get_left_color()
+{
+    return left_color;
+}
+
+wfc::Color wfc::eigenstate::get_right_color()
+{
+    return right_color;
+}
+
+wfc::Color wfc::eigenstate::get_down_color()
+{
+    return down_color;
 }

@@ -9,11 +9,11 @@ wfc::tile_wfc::tile_wfc(wfc::eigenstate *eigenstates, int e_size)
 
     for(int i = 0; i < e_size; i++)
     {
-        eigenstate_map.insert({eigenstates + i, new int[e_size]});
+        eigenstate_map.insert({eigenstates + i, new int*[e_size]});
 
         for(int j = 0; j < e_size; j++)
         {
-            eigenstate_map[eigenstates + i][j] = calculate_noise(eigenstates + i, eigenstates + j);
+            eigenstate_map[eigenstates + i][j] = calculate_noises(eigenstates + i, eigenstates + j);
 
             // std::cout << "state : " << eigenstates + i << " neighbour : " << eigenstates + j << 
             // " noise : " << eigenstate_map[eigenstates + i][j] << std::endl;
@@ -57,6 +57,7 @@ int* wfc::tile_wfc::get_lowest_possible_grid_element(States **grid, int row, int
 }
 
 void wfc::tile_wfc::update_possible_grid_element(std::vector<int>* possible_eigenstate_index, eigenstate *neighbour_state,
+    int noise_index,
     int max_allowed_noise)
 {
     int i = 0;
@@ -65,7 +66,7 @@ void wfc::tile_wfc::update_possible_grid_element(std::vector<int>* possible_eige
     {
         int index = (*possible_eigenstate_index)[i];
 
-        if(eigenstate_map[neighbour_state][index] > max_allowed_noise)
+        if(eigenstate_map[neighbour_state][index][noise_index] > max_allowed_noise)
         {
             auto it = possible_eigenstate_index->begin();
 
@@ -81,28 +82,45 @@ void wfc::tile_wfc::update_possible_grid_element(std::vector<int>* possible_eige
 
 void wfc::tile_wfc::update_neighbours_possible(States** grid, int* results, int row, int column, eigenstate* state, int max_allowed_noise)
 {
-    if(results[0] + 1 < row) update_possible_grid_element(&(grid[results[0] + 1][results[1]].possible_states), state, max_allowed_noise);
-    if(results[1] + 1 < column) update_possible_grid_element(&(grid[results[0]][results[1] + 1].possible_states), state, max_allowed_noise);
-    if(results[0] - 1 >= 0) update_possible_grid_element(&(grid[results[0] - 1][results[1]].possible_states), state, max_allowed_noise);
-    if(results[1] - 1 >= 0) update_possible_grid_element(&(grid[results[0]][results[1] - 1].possible_states), state, max_allowed_noise);
+    if(results[0] + 1 < row) update_possible_grid_element(&(grid[results[0] + 1][results[1]].possible_states), state, 3, max_allowed_noise);
+    if(results[1] + 1 < column) update_possible_grid_element(&(grid[results[0]][results[1] + 1].possible_states), state, 2, max_allowed_noise);
+    if(results[0] - 1 >= 0) update_possible_grid_element(&(grid[results[0] - 1][results[1]].possible_states), state, 0, max_allowed_noise);
+    if(results[1] - 1 >= 0) update_possible_grid_element(&(grid[results[0]][results[1] - 1].possible_states), state, 1, max_allowed_noise);
 }
 
-int wfc::tile_wfc::calculate_noise(wfc::eigenstate *state1, wfc::eigenstate *state2)
+int* wfc::tile_wfc::calculate_noises(wfc::eigenstate *state1, wfc::eigenstate *state2)
 {
-    wfc::Color* color1 = state1->get_color();
-    wfc::Color* color2 = state2->get_color();
+    int* noises = new int[4];
 
-    int noise = 0;
-
-    for(int i = 0; i < 12; i++)
     {
-        // std::cout << "color 1 : " << color1[i].r << " , " << color1[i].g << " , " << color1[i].b << std::endl;
-        // std::cout << "color 2 : " << color2[i].r << " , " << color2[i].g << " , " << color2[i].b << std::endl;
-        
-        noise += abs(color1[i].r - color2[i].r) + abs(color1[i].g - color2[i].g) + abs(color1[i].b - color2[i].b);
+        wfc::Color color1 = state1->get_up_color();
+        wfc::Color color2 = state2->get_up_color();
+
+        noises[0] = (abs(color1.r - color2.r) + abs(color1.g - color2.g) + abs(color1.b - color2.b)) / 2;
     }
 
-    return noise / 12;
+    {
+        wfc::Color color1 = state1->get_left_color();
+        wfc::Color color2 = state2->get_left_color();
+
+        noises[1] = (abs(color1.r - color2.r) + abs(color1.g - color2.g) + abs(color1.b - color2.b)) / 2;
+    }
+
+    {
+        wfc::Color color1 = state1->get_right_color();
+        wfc::Color color2 = state2->get_right_color();
+
+        noises[2] = (abs(color1.r - color2.r) + abs(color1.g - color2.g) + abs(color1.b - color2.b)) / 2;
+    }
+
+    {
+        wfc::Color color1 = state1->get_down_color();
+        wfc::Color color2 = state2->get_down_color();
+
+        noises[3] = (abs(color1.r - color2.r) + abs(color1.g - color2.g) + abs(color1.b - color2.b)) / 2;
+    }
+
+    return noises;
 }
 
 int** wfc::tile_wfc::generate(int row, int column, int max_allowed_noise)
