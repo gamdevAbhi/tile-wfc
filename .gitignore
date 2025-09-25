@@ -16,7 +16,7 @@ Desktop.ini
 stb_*.tmp
 
 # Assets Folder
-assets/
+# assets/
 
 # Build and output directories
 build/

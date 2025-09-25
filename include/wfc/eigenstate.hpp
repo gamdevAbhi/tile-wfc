@@ -4,6 +4,8 @@
 #include <raylib/raylib.h>
 #include <cmath>
 
+#include <iostream>
+
 namespace wfc
 {
     struct Region

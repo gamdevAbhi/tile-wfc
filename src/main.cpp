@@ -24,10 +24,16 @@ Texture2D generate_eigenstate(wfc::eigenstate* state, const char* path)
 
 int main()
 {
-    InitWindow(600, 600, "TILE WFC");
+    InitWindow(640, 640, "TILE_WFC");
 
-    int row = 30, column = 30, noise = 100;
-    wfc::eigenstate* states = (wfc::eigenstate*)malloc(sizeof(wfc::eigenstate) * 5);
+    int row = 40, column = 40, noise = 47;
+
+    // different noises result
+    // 12 will cause only connected path to generate or only white path
+    // 47 cause overlapping path to generate or only white path
+    // 48 will make mix of white and paths. 
+
+    wfc::eigenstate* states = (wfc::eigenstate*)malloc(sizeof(wfc::eigenstate) * 4);
     Texture2D textures[4];
 
     textures[0] = generate_eigenstate(states, "../assets/images/1.png");
@@ -41,14 +47,14 @@ int main()
 
     std::cout << "wfc generated" << std::endl;
 
-    int** grid = wfc.generate(row, column, noise);
+    int** grid = wfc.generate(column, row, noise);
 
     std::cout << "grid generated" << std::endl;
 
     while(!WindowShouldClose())
     {
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
 
         for(int i = 0; i < row; i++)
         {
@@ -56,10 +62,11 @@ int main()
 
             for(int j = 0; j < column; j++)
             {
-                if((grid + i)[j] == nullptr) continue;
+                if(grid[j][i] == -1) continue;
+
                 int y_pixel = j * 16;
                 
-                DrawTexture(textures[grid[i][j]], x_pixel, y_pixel, WHITE);
+                DrawTexture(textures[grid[j][i]], x_pixel, y_pixel, WHITE);
             }
         }
 

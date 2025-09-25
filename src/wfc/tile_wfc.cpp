@@ -18,6 +18,8 @@ wfc::tile_wfc::tile_wfc(wfc::eigenstate *eigenstates, int e_size)
             // std::cout << "state : " << eigenstates + i << " neighbour : " << eigenstates + j << 
             // " noise : " << eigenstate_map[eigenstates + i][j] << std::endl;
         }
+
+        // std::cout << " ";
     }
 }
 
@@ -94,28 +96,30 @@ int* wfc::tile_wfc::calculate_noises(wfc::eigenstate *state1, wfc::eigenstate *s
 
     {
         wfc::Color color1 = state1->get_up_color();
-        wfc::Color color2 = state2->get_up_color();
+        wfc::Color color2 = state2->get_down_color();
 
         noises[0] = (abs(color1.r - color2.r) + abs(color1.g - color2.g) + abs(color1.b - color2.b)) / 2;
+
+        // std::cout << "noises[0] : " << noises[0] << std::endl;
     }
 
     {
         wfc::Color color1 = state1->get_left_color();
-        wfc::Color color2 = state2->get_left_color();
+        wfc::Color color2 = state2->get_right_color();
 
         noises[1] = (abs(color1.r - color2.r) + abs(color1.g - color2.g) + abs(color1.b - color2.b)) / 2;
     }
 
     {
         wfc::Color color1 = state1->get_right_color();
-        wfc::Color color2 = state2->get_right_color();
+        wfc::Color color2 = state2->get_left_color();
 
         noises[2] = (abs(color1.r - color2.r) + abs(color1.g - color2.g) + abs(color1.b - color2.b)) / 2;
     }
 
     {
         wfc::Color color1 = state1->get_down_color();
-        wfc::Color color2 = state2->get_down_color();
+        wfc::Color color2 = state2->get_up_color();
 
         noises[3] = (abs(color1.r - color2.r) + abs(color1.g - color2.g) + abs(color1.b - color2.b)) / 2;
     }
@@ -123,20 +127,22 @@ int* wfc::tile_wfc::calculate_noises(wfc::eigenstate *state1, wfc::eigenstate *s
     return noises;
 }
 
-int** wfc::tile_wfc::generate(int row, int column, int max_allowed_noise)
+int** wfc::tile_wfc::generate(int column, int row, int max_allowed_noise)
 {
     int grid_size = row * column;
 
     States** grid = new States*[row];
-    int** final_grid = (int**)malloc(row * sizeof(int*));
+    int** final_grid = new int*[row];
 
     for(int i = 0; i < row; i++)
     {
         grid[i] = new States[column];
-        final_grid[i] = (int*)malloc(column * sizeof(int));
+        final_grid[i] = new int[column];
 
         for(int j = 0; j < column; j++)
         {
+            final_grid[i][j] = -1;
+
             for(int x = 0; x < e_size; x++) grid[i][j].possible_states.push_back(x);
         }
     }
@@ -169,6 +175,12 @@ int** wfc::tile_wfc::generate(int row, int column, int max_allowed_noise)
         // std::cout << "loop : " << i << std::endl;
 
         int* results = get_lowest_possible_grid_element(grid, row, column);
+
+        if(results[0] == -1)
+        {
+            std::cout << "skip" << std::endl;
+            continue;
+        }
 
         // std::cout << "results : [" << results[0] << ", " << results[1] << "], size : " << results[2] << std::endl;
 
